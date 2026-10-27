@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kiddo Player">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#e4f2ff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAEvElEQVR4Xu3dwW0UTRCG4THixsVZsBEgEkByBrYIAS4OhQuEgCADJBLAjsBh+MIdWSOtl/HMbNVMV3V11/tcGYyn/1ffrL3+4eLt9d0AzHnFsWAJcYA4oMdygOWAHssBlgN6LAdYDuixHGA5oMdygOWAHssBlgN6LAdYDuixHGA5oMdygOWAHssBlgN6LAdYDuixHGA5oMdygOWAHssBlgN6LAdYDuixHGA5oMdygOWAHssBlgN6r/W/xdXDj3euf567w829+58pdRHwL6ntPogl0UKJFUfaLE7FSSREHDQxq3ol9b9aoYwl1U+m5nJUv/lW1JqQastBGXK1zqpOHLXutl1VTqxCHFXuswP+5+Ydh/8d9sT59FzjcL63LnmeoV8cnnfVN7eTdIrD7X6S8DlPjzh87iQbh1P1iAONMo/DIfC0rM/WNg7rzx6mJ2wbB5pGHFhkGIfp4uHI7pwN40DrrOKwyxkvGZ22VRzoAHGgxgvSOB6vbuN8Mg0xWQ6jR+Aej1e3fSdiceYmcYTVdx/F5YpjGPqfkILSxTHq/ilTRNI4jokUOcRepY6DCVmXPQ6eMiuI4xkvRCaIY4ovd4+IYwYTMiKORSRCHGdkfsoQx3lpJ4Q4pBImQhw6qZ4yxKGWZ0KIY6MMiRDHLn0/ZYhjr44nhDjK6DIR4iips0SIo7xuXogQh4k+JoQ4DLWeCHGYa/cpQxweGp2Q6P+MVx8uf31p8UZYDnONljEMLIeldrMY8Vgx0XoWIx4r5fVRBstRWDdZ8FgpqbMsiKOMLrPgNUcBHZfBa47t+s6Cx8pGGbLgsbJFnjJ4rCikyoLHilTCLHisiKQtg8fKmsxZ8FhZRBY8VuZRxhFv2T8jiwnieEIWs7LHQRYrUv+wD2WsS7ocZCGRLg6ykMv1WKEMFZPlONzcW/yrUnt0n8Xh5n7P+cxKsRzdl2EkRRzYhjiwyCoOi0cglhidtlUc6IBhHEY5Y8LunA3jQOuIA+4vSEd2iweHEzZfDvqwY3225nGgXR5xWAeek8OpesTBi4/iHMpw/WuffO4nA7eTdFoOh5fWSbiV4boc9LGfZxkV4uD1x2bOZdSJgz428C+jWhz0oVKljGEYLt5e36k+0eKi/bRpKLWyGLl+tTKr7v1HVv1k6i/HKVYk1AM3VhyjtIlUn4qJiHGk2pJoQZyKHgcqqv+CFGERBxYRB4gDeiwHWA7osRxgOaDHcoDlgJ7J3wm238PnT6cf5PD1256P+efx++lvf3/5cc9H+/vh5+lvf/P7es9Hm7zLGOqtlnDvrUyy2JnIJIudiUyy2JnIypvPQRKJ9ZpjpYynt/L/n5OzVsoYhjO/+tJKGcNw5ldfWikjzg8tBIpD8t9ecs1ovQz5NaP1MuTXjNbLkF9jLVAciCZKHPJJkFwpmQ35eEhmQz4ektkIMh5R4kBAxIFFxAHigF6U5ZB/D1Rypfx7oJIr5d8DlVwp/waX/EojUeJAQIHikEyC5JqRZBIk14wkkyC5ZiSZBMk11gLF8XRqq2+wycuQ9CEvQ9KHvAxJHxHKCPF/2c/iXdkIwr0rizhiPVYQCnFgEXGAOKDHcoDlgB7LAZYDeiwHWA7osRxgOaD3D51oXbSJG52UAAAAAElFTkSuQmCC">
+<title>Kiddo Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one big-tile video shelf for the child; a PIN-locked tabbed panel for the grown-up. */
+:root{
+  --ink:#14213d; --muted:#55627c; --bg:#e4f2ff; --card:#ffffff; --line:#c9dcf0;
+  --sun:#ffc233; --sun-ink:#4a3400; --berry:#ef476f; --leaf:#1c9c72; --blue:#2757c9;
+  --radius:22px;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.45;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  min-height:100vh; -webkit-tap-highlight-color:transparent; overflow-x:hidden;
+}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+[hidden]{display:none!important}
+#app{max-width:980px;margin:0 auto;padding-block:18px 96px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+
+/* ---------- kid home ---------- */
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.brand .dots{display:grid;grid-template-columns:repeat(2,14px);gap:5px}
+.brand .dots i{width:14px;height:14px;border-radius:50%}
+.brand .dots i:nth-child(1){background:var(--sun)}
+.brand .dots i:nth-child(2){background:var(--berry)}
+.brand .dots i:nth-child(3){background:var(--leaf)}
+.brand .dots i:nth-child(4){background:var(--blue)}
+.brand h1{font-size:2.1rem;font-weight:700;letter-spacing:.01em}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
+.tile{
+  display:flex;flex-direction:column;text-align:left;background:var(--card);border:0;border-radius:var(--radius);
+  padding:0;overflow:hidden;box-shadow:0 6px 0 var(--accent,var(--sun));transition:transform .12s;
+}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 var(--accent,var(--sun))}
+.tile .thumb{position:relative;aspect-ratio:16/9;background:#cfe0f3;max-width:100%}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .playmark{
+  position:absolute;right:12px;bottom:12px;width:54px;height:54px;border-radius:50%;
+  background:var(--accent,var(--sun));display:grid;place-items:center;box-shadow:0 3px 8px rgba(20,33,61,.3);
+}
+.tile .playmark svg{width:24px;height:24px;margin-left:3px;fill:#fff}
+.tile .cap{padding:12px 16px 16px;font-family:var(--display);font-weight:600;font-size:1.25rem;line-height:1.2;overflow-wrap:anywhere}
+.empty{
+  background:var(--card);border-radius:var(--radius);padding:28px 22px;text-align:center;box-shadow:0 6px 0 var(--sun);
+}
+.empty h2{font-size:1.6rem;margin-bottom:8px}
+.empty p{margin:0;color:var(--muted)}
+.search{display:flex;gap:10px;margin-bottom:20px}
+.search input{
+  flex:1;min-width:0;border:3px solid var(--line);border-radius:999px;padding:14px 20px;font-size:1.2rem;background:#fff;
+}
+.search button{
+  border:0;border-radius:999px;background:var(--blue);color:#fff;font-family:var(--display);font-weight:600;
+  font-size:1.15rem;padding:0 24px;
+}
+.sectionlabel{font-family:var(--display);font-size:1.15rem;font-weight:600;color:var(--muted);margin:22px 0 12px}
+.note{background:#fff;border-radius:16px;padding:14px 16px;color:var(--muted);margin-bottom:16px}
+.lockbtn{
+  position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:center;gap:8px;border:2px solid var(--line);background:rgba(255,255,255,.9);color:var(--muted);
+  border-radius:999px;padding:9px 14px 9px 11px;font-weight:700;font-size:.9rem;
+}
+.lockbtn svg{width:18px;height:18px}
+
+/* ---------- player ---------- */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.bigback{
+  display:flex;align-items:center;gap:10px;border:0;background:var(--sun);color:var(--sun-ink);border-radius:999px;
+  padding:14px 26px 14px 20px;font-family:var(--display);font-weight:700;font-size:1.3rem;box-shadow:0 5px 0 #d99a00;
+}
+.bigback:active{transform:translateY(3px);box-shadow:0 2px 0 #d99a00}
+.bigback svg{width:24px;height:24px}
+.smallbtn{
+  display:inline-flex;align-items:center;gap:7px;border:2px solid var(--line);background:#fff;color:var(--muted);
+  border-radius:999px;padding:8px 14px;font-weight:700;font-size:.9rem;
+}
+.smallbtn svg{width:16px;height:16px}
+.stage{
+  position:relative;aspect-ratio:16/9;background:#0e1a33;border-radius:var(--radius);overflow:hidden;max-width:100%;
+  box-shadow:0 6px 0 var(--blue);
+}
+.stage #yt,.stage #yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.shield{position:absolute;inset:0;z-index:3;background:transparent;border:0;width:100%;display:grid;place-items:center;padding:0}
+.shield .mark{
+  width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;
+  opacity:0;transform:scale(.8);transition:opacity .2s,transform .2s;pointer-events:none;
+}
+.shield .mark svg{width:38px;height:38px;fill:var(--ink)}
+.stage.paused .mark{opacity:1;transform:scale(1)}
+.nowplaying{font-family:var(--display);font-weight:600;font-size:1.35rem;margin:18px 4px 0;overflow-wrap:anywhere}
+.done{
+  position:absolute;inset:0;display:grid;place-content:center;gap:16px;text-align:center;padding:20px;
+  background:linear-gradient(160deg,#fff 0%,#e9f6ff 100%);z-index:4;
+}
+.done h2{font-size:2.2rem}
+.done p{margin:0;color:var(--muted)}
+.done .bigback{justify-self:center}
+.errbox{position:absolute;inset:0;z-index:4;display:grid;place-content:center;text-align:center;gap:14px;padding:20px;background:#fff}
+.errbox p{margin:0;font-size:1.15rem}
+
+/* ---------- parent ---------- */
+.ptitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ptitle h1{font-size:1.7rem}
+.donebtn{border:0;background:var(--leaf);color:#fff;border-radius:999px;padding:10px 22px;font-weight:800}
+.tabs{display:flex;gap:6px;background:#d3e6f8;border-radius:999px;padding:5px;margin-bottom:18px}
+.tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:10px 8px;font-weight:800;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(20,33,61,.18)}
+.card{background:var(--card);border-radius:18px;padding:18px;margin-bottom:16px}
+.card h2{font-size:1.2rem;margin-bottom:6px}
+.card p{margin:0 0 12px;color:var(--muted);font-size:.95rem}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{
+  border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 10px;text-align:left;font-weight:800;
+  display:flex;flex-direction:column;gap:3px;
+}
+.seg button small{font-weight:600;color:var(--muted);font-size:.8rem;line-height:1.3}
+.seg button[aria-pressed="true"]{border-color:var(--blue);background:#eef3ff}
+textarea,.field{
+  width:100%;border:2px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;font-size:1rem;resize:vertical;
+}
+textarea{min-height:92px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;background:var(--blue);color:#fff;font-weight:800;padding:11px 18px}
+.btn.alt{background:#fff;color:var(--ink);border:2px solid var(--line)}
+.btn.danger{background:var(--berry)}
+.btn[disabled]{opacity:.55}
+.status{margin:10px 0 0;font-size:.95rem;color:var(--muted);min-height:1.4em}
+.list{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.item{display:flex;gap:12px;align-items:center;min-width:0}
+.item img{width:92px;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#cfe0f3;flex:none;max-width:35%}
+.item .meta{flex:1;min-width:0}
+.item .t{font-weight:800;overflow-wrap:anywhere;line-height:1.25}
+.item .c{color:var(--muted);font-size:.88rem;overflow-wrap:anywhere}
+.item .btn{padding:8px 12px;font-size:.9rem}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#eef3ff;border-radius:999px;padding:6px 6px 6px 12px;font-weight:700;margin:0 6px 6px 0}
+.chip button{border:0;background:#fff;border-radius:50%;width:24px;height:24px;line-height:1;font-weight:800}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.switch input{width:26px;height:26px;accent-color:var(--blue)}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:.8rem}
+
+/* ---------- modal / toast ---------- */
+#modal{position:fixed;inset:0;z-index:50}
+.scrim{position:absolute;inset:0;background:rgba(20,33,61,.55);display:grid;place-items:center;padding:20px}
+.sheet{background:#fff;border-radius:24px;padding:22px;width:min(100%,360px);max-height:92vh;overflow:auto}
+.sheet h2{font-size:1.4rem;text-align:center;margin-bottom:14px}
+.sheet .stack{display:flex;flex-direction:column;gap:10px}
+.dotsrow{display:flex;gap:14px;justify-content:center;margin-bottom:18px}
+.dotsrow i{width:16px;height:16px;border-radius:50%;border:3px solid var(--blue)}
+.dotsrow i.on{background:var(--blue)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pad button{border:0;background:#eef3ff;border-radius:16px;padding:16px 0;font-family:var(--display);font-size:1.6rem;font-weight:600}
+.pad button:active{background:#d9e5ff}
+.pad .ghost{background:transparent;font-size:1rem;font-family:var(--body);font-weight:800;color:var(--muted)}
+#toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:60;
+  background:var(--ink);color:#fff;border-radius:999px;padding:10px 20px;font-weight:700;max-width:90vw;text-align:center;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal" hidden></div>
+<div id="toast" role="status" hidden></div>
+<noscript><p style="padding:20px">Kiddo Player needs JavaScript turned on.</p></noscript>
+
+<script>
+"use strict";
+/* ============ storage ============ */
+const KEY = "kiddo.v1";
+const DEFAULTS = {pin:null, mode:"allow", videos:[], blockedVideos:[], blockedChannels:[], blockedWords:[], apiKey:"", autoNext:true};
+let S = load();
+function load(){
+  const s = JSON.parse(JSON.stringify(DEFAULTS));
+  try{ const r = localStorage.getItem(KEY); if(r) Object.assign(s, JSON.parse(r)); }catch(e){}
+  return s;
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ============ tiny helpers ============ */
+const $ = s => document.querySelector(s);
+function h(tag, props, ...kids){
+  const e = document.createElement(tag);
+  for(const k in (props||{})){
+    const v = props[k];
+    if(k==="class") e.className = v;
+    else if(k==="text") e.textContent = v;
+    else if(k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if(v===true) e.setAttribute(k,"");
+    else if(v!==false && v!=null) e.setAttribute(k, v);
+  }
+  for(const c of kids.flat()){
+    if(c==null || c===false) continue;
+    e.append(c.nodeType ? c : document.createTextNode(c));
+  }
+  return e;
+}
+const ICONS = {
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  play:'<svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24"><rect x="5.5" y="4" width="4.5" height="16" rx="1.2"/><rect x="14" y="4" width="4.5" height="16" rx="1.2"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'
+};
+function icon(name){ const s = document.createElement("span"); s.style.display="contents"; s.innerHTML = ICONS[name]; return s; }
+let toastTimer;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ t.hidden = true; }, 2600);
+}
+const thumb = id => "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
+const ACCENTS = ["#ffc233","#ef476f","#1c9c72","#2757c9"];
+
+/* ============ video rules ============ */
+function parseId(s){
+  s = (s||"").trim();
+  if(/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
+  const m = s.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/|\/live\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+function hasBlockedWord(v){
+  const t = ((v.title||"") + " " + (v.channel||"")).toLowerCase();
+  return S.blockedWords.some(w => w && t.includes(w.toLowerCase()));
+}
+function isBlocked(v){
+  if(S.blockedVideos.some(b => b.id === v.id)) return true;
+  if(S.blockedChannels.some(c => (c.id && v.channelId && c.id === v.channelId) ||
+     (c.title && v.channel && c.title.toLowerCase() === v.channel.toLowerCase()))) return true;
+  return hasBlockedWord(v);
+}
+function isPlayable(v){
+  if(S.mode === "allow") return S.videos.some(x => x.id === v.id);
+  return !isBlocked(v);
+}
+function picks(){ return S.videos.filter(isPlayable); }
+
+async function fetchMeta(id){
+  try{
+    const r = await fetch("https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent("https://www.youtube.com/watch?v=" + id));
+    if(r.status === 401) return {ok:false, reason:"has embedding turned off"};
+    if(r.status === 404 || r.status === 400) return {ok:false, reason:"was not found or is private"};
+    if(!r.ok) throw new Error("bad");
+    const j = await r.json();
+    return {ok:true, title:j.title, channel:j.author_name || ""};
+  }catch(e){
+    return {ok:true, title:"Video " + id, channel:"", guessed:true};
+  }
+}
+
+/* ============ PIN ============ */
+let fails = 0, lockedUntil = 0;
+async function hashPin(p){
+  const d = new TextEncoder().encode("kiddo:" + p);
+  if(window.crypto && crypto.subtle){
+    const b = await crypto.subtle.digest("SHA-256", d);
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join("");
+  }
+  return "x" + p;
+}
+function closeModal(){ const m = $("#modal"); m.hidden = true; m.replaceChildren(); }
+function openModal(content, onScrim){
+  const m = $("#modal");
+  m.replaceChildren(h("div",{class:"scrim", onclick:e=>{ if(e.target===e.currentTarget){ closeModal(); onScrim&&onScrim(); } }}, content));
+  m.hidden = false;
+}
+function askPin(title){
+  return new Promise(resolve => {
+    let val = "";
+    const dots = h("div",{class:"dotsrow"}, [0,1,2,3].map(()=>h("i")));
+    const paint = () => [...dots.children].forEach((d,i)=>d.classList.toggle("on", i < val.length));
+    const finish = v => { closeModal(); resolve(v); };
+    const key = n => h("button",{type:"button","aria-label":String(n), onclick:()=>{
+      if(val.length < 4){ val += n; paint(); if(val.length === 4) setTimeout(()=>finish(val), 120); }
+    }, text:String(n)});
+    const pad = h("div",{class:"pad"},
+      [1,2,3,4,5,6,7,8,9].map(key),
+      h("button",{class:"ghost",type:"button",onclick:()=>finish(null),text:"Cancel"}),
+      key(0),
+      h("button",{class:"ghost",type:"button","aria-label":"Delete",onclick:()=>{ val = val.slice(0,-1); paint(); },text:"Delete"})
+    );
+    openModal(h("div",{class:"sheet"}, h("h2",{text:title}), dots, pad), ()=>resolve(null));
+  });
+}
+async function unlock(){
+  if(!S.pin){
+    const a = await askPin("Choose a 4-digit PIN"); if(!a) return false;
+    const b = await askPin("Enter it again"); if(!b) return false;
+    if(a !== b){ toast("The PINs did not match. Try again."); return false; }
+    S.pin = await hashPin(a); save(); toast("PIN saved"); return true;
+  }
+  if(Date.now() < lockedUntil){ toast("Too many tries. Wait a minute."); return false; }
+  const p = await askPin("Grown-ups: enter your PIN"); if(!p) return false;
+  if(await hashPin(p) === S.pin){ fails = 0; return true; }
+  fails++; if(fails >= 5){ lockedUntil = Date.now() + 60000; fails = 0; }
+  toast("That PIN is not right"); return false;
+}
+function sheet(title, buttons){
+  return new Promise(resolve => {
+    const stack = h("div",{class:"stack"}, buttons.map(b => h("button",{
+      class:"btn " + (b.kind||""), type:"button", text:b.label,
+      onclick:()=>{ closeModal(); resolve(b.value); }
+    })), h("button",{class:"btn alt",type:"button",text:"Cancel",onclick:()=>{ closeModal(); resolve(null); }}));
+    openModal(h("div",{class:"sheet"}, h("h2",{text:title}), stack), ()=>resolve(null));
+  });
+}
+
+/* ============ state ============ */
+let view = "home", tab = "videos";
+let current = null, ytPlayer = null, ytState = -1, playError = "", ended = false;
+let query = "", results = null, searching = false, searchError = "";
+
+function go(v){ leavePlayer(); view = v; render(); }
+function render(){
+  const app = $("#app");
+  app.replaceChildren(view==="home" ? Home() : view==="play" ? Play() : Parent());
+  if(view==="home" || view==="play"){
+    // keep the grown-up button reachable on every kid screen except the player's own bar
+  }
+  if(view==="home") app.append(LockButton());
+  window.scrollTo(0,0);
+  if(view==="play" && !ended && !playError) requestAnimationFrame(startPlayer);
+}
+function LockButton(){
+  return h("button",{class:"lockbtn",type:"button",onclick:async()=>{ if(await unlock()){ tab="videos"; go("parent"); } }},
+    icon("lock"), "Grown-ups");
+}
+
+/* ============ kid: home ============ */
+function Tile(v, i){
+  const t = h("button",{class:"tile",type:"button",style:"--accent:" + ACCENTS[i % 4], onclick:()=>play(v)},
+    h("div",{class:"thumb"},
+      h("img",{src:thumb(v.id),alt:"",loading:"lazy"}),
+      h("div",{class:"playmark"}, icon("play"))),
+    h("div",{class:"cap",text:v.title}));
+  return t;
+}
+function Home(){
+  const root = h("div");
+  root.append(h("div",{class:"brand"}, h("div",{class:"dots"}, h("i"),h("i"),h("i"),h("i")), h("h1",{text:"Kiddo Player"})));
+
+  if(S.mode === "block"){
+    if(S.apiKey){
+      const input = h("input",{id:"q",type:"search",placeholder:"What do you want to watch?",value:query,autocomplete:"off",enterkeyhint:"search"});
+      root.append(h("form",{class:"search",onsubmit:e=>{ e.preventDefault(); query = input.value.trim(); runSearch(); }},
+        input, h("button",{type:"submit",text:"Find"})));
+      if(searching) root.append(h("div",{class:"note",text:"Looking for videos..."}));
+      if(searchError) root.append(h("div",{class:"note",text:searchError}));
+      if(results){
+        root.append(h("div",{class:"sectionlabel",text:"Found for you"}));
+        root.append(results.length
+          ? h("div",{class:"shelf"}, results.map(Tile))
+          : h("div",{class:"note",text:"No videos found. Try different words."}));
+      }
+    } else {
+      root.append(h("div",{class:"note",text:"A grown-up can turn on search in Grown-ups > Settings."}));
+    }
+  }
+
+  const list = picks();
+  if(list.length){
+    if(S.mode==="block" && (results||S.apiKey)) root.append(h("div",{class:"sectionlabel",text:"Picked for you"}));
+    root.append(h("div",{class:"shelf"}, list.map(Tile)));
+  } else if(!(S.mode==="block" && S.apiKey)){
+    root.append(h("div",{class:"empty"},
+      h("h2",{text:"No videos yet"}),
+      h("p",{text:"A grown-up can add videos with the Grown-ups button."})));
+  }
+  return root;
+}
+async function runSearch(){
+  searchError = ""; results = null;
+  if(!query){ render(); return; }
+  searching = true; render();
+  try{
+    const u = new URL("https://www.googleapis.com/youtube/v3/search");
+    u.search = new URLSearchParams({part:"snippet",type:"video",maxResults:"15",safeSearch:"strict",
+      videoEmbeddable:"true",videoSyndicated:"true",q:query,key:S.apiKey}).toString();
+    const r = await fetch(u);
+    const j = await r.json();
+    if(!r.ok) throw new Error(j && j.error && j.error.message || "Search failed");
+    results = (j.items||[]).map(it => ({
+      id: it.id.videoId, title: decodeEntities(it.snippet.title),
+      channel: decodeEntities(it.snippet.channelTitle), channelId: it.snippet.channelId
+    })).filter(v => v.id && isPlayable(v));
+  }catch(e){
+    searchError = "Search is not working right now. Ask a grown-up to check the search key.";
+  }
+  searching = false; render();
+}
+function decodeEntities(s){ const t = document.createElement("textarea"); t.innerHTML = s||""; return t.value; }
+
+/* ============ kid: player ============ */
+let ytReady = null;
+function loadYT(){
+  if(ytReady) return ytReady;
+  ytReady = new Promise((res, rej) => {
+    if(window.YT && YT.Player) return res();
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { prev && prev(); res(); };
+    const s = document.createElement("script");
+    s.src = "https://www.youtube.com/iframe_api";
+    s.onerror = () => { ytReady = null; rej(new Error("load")); };
+    document.head.append(s);
+  });
+  return ytReady;
+}
+function play(v){
+  if(!isPlayable(v)){ toast("That video is not available."); return; }
+  leavePlayer(); current = v; ended = false; playError = ""; ytState = -1; view = "play"; render();
+}
+function leavePlayer(){
+  if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer = null; }
+}
+async function startPlayer(){
+  const box = $("#yt"); if(!box || !current) return;
+  try{ await loadYT(); }catch(e){ playError = "Can't reach YouTube. Check the internet and try again."; render(); return; }
+  if(!$("#yt")) return;
+  const mount = h("div"); $("#yt").append(mount);
+  const vars = {autoplay:1, controls:0, rel:0, modestbranding:1, playsinline:1, fs:0, iv_load_policy:3, disablekb:1};
+  if(/^https?:$/.test(location.protocol)) vars.origin = location.origin;
+  ytPlayer = new YT.Player(mount, {
+    host:"https://www.youtube-nocookie.com", videoId: current.id, playerVars: vars,
+    events:{
+      onReady:e => { try{ e.target.playVideo(); }catch(x){} },
+      onStateChange:onState,
+      onError:() => { leavePlayer(); playError = "This video can't be played here. Pick another one."; render(); }
+    }
+  });
+}
+function onState(e){
+  ytState = e.data;
+  const st = $(".stage"); if(st) st.classList.toggle("paused", ytState === 2);
+  if(ytState === 0) finishVideo();
+}
+function finishVideo(){
+  const list = picks(); const i = list.findIndex(x => x.id === current.id);
+  leavePlayer();
+  if(S.autoNext && i >= 0 && i < list.length - 1){ current = list[i+1]; ended = false; ytState = -1; render(); return; }
+  ended = true; render();
+}
+function toggleShield(){
+  if(!ytPlayer) return;
+  try{ ytState === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); }catch(e){}
+}
+async function grownUpOnPlayer(){
+  try{ ytPlayer && ytPlayer.pauseVideo(); }catch(e){}
+  if(!await unlock()) return;
+  const opts = [];
+  if(S.mode === "allow") opts.push({label:"Remove from approved videos", value:"remove", kind:"danger"});
+  else {
+    opts.push({label:"Block this video", value:"video", kind:"danger"});
+    if(current.channel) opts.push({label:"Block channel: " + current.channel, value:"channel", kind:"danger"});
+  }
+  const pick = await sheet("This video", opts);
+  if(pick === "remove") S.videos = S.videos.filter(x => x.id !== current.id);
+  else if(pick === "video") S.blockedVideos.push({id:current.id, title:current.title});
+  else if(pick === "channel") S.blockedChannels.push({id:current.channelId||"", title:current.channel});
+  if(pick){
+    save(); toast("Done"); results = null; go("home");
+  } else { try{ ytPlayer && ytPlayer.playVideo(); }catch(e){} }
+}
+function Play(){
+  const stage = h("div",{class:"stage" + (ytState===2 ? " paused":"")});
+  if(playError){
+    stage.append(h("div",{class:"errbox"}, h("p",{text:playError}),
+      h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "Videos")));
+  } else if(ended){
+    stage.append(h("div",{class:"done"}, h("h2",{text:"All done!"}), h("p",{text:"That was the last video."}),
+      h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "More videos")));
+  } else {
+    stage.append(h("div",{id:"yt"}));
+    const mark = h("div",{class:"mark"}, icon("play"));
+    stage.append(h("button",{class:"shield",type:"button","aria-label":"Pause or play",onclick:toggleShield}, mark));
+  }
+  return h("div",{},
+    h("div",{class:"bar"},
+      h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "Back"),
+      h("button",{class:"smallbtn",type:"button",onclick:grownUpOnPlayer}, icon("lock"), "Grown-ups")),
+    stage,
+    h("div",{class:"nowplaying",text:current ? current.title : ""}));
+}
+
+/* ============ grown-up panel ============ */
+function Parent(){
+  const root = h("div");
+  root.append(h("div",{class:"ptitle"}, h("h1",{text:"Grown-ups"}),
+    h("button",{class:"donebtn",type:"button",onclick:()=>{ results = null; go("home"); }, text:"Done"})));
+  const names = {videos:"Videos", blocked:"Blocked", settings:"Settings"};
+  root.append(h("div",{class:"tabs",role:"tablist"}, Object.keys(names).map(k =>
+    h("button",{type:"button",role:"tab","aria-selected":String(tab===k),onclick:()=>{ tab=k; render(); },text:names[k]}))));
+  root.append(tab==="videos" ? TabVideos() : tab==="blocked" ? TabBlocked() : TabSettings());
+  return root;
+}
+function videoRow(v, label, onClick){
+  return h("li",{class:"item"},
+    h("img",{src:thumb(v.id),alt:"",loading:"lazy"}),
+    h("div",{class:"meta"}, h("div",{class:"t",text:v.title}), v.channel ? h("div",{class:"c",text:v.channel}) : null),
+    h("button",{class:"btn alt",type:"button",text:label,onclick:onClick}));
+}
+function TabVideos(){
+  const wrap = h("div");
+  const modeCard = h("div",{class:"card"}, h("h2",{text:"What can they watch?"}),
+    h("p",{text:"Pick one. For ages 2 to 5, the first choice is the safest."}),
+    h("div",{class:"seg"},
+      h("button",{type:"button","aria-pressed":String(S.mode==="allow"),onclick:()=>{ S.mode="allow"; save(); render(); }},
+        "Only approved", h("small",{text:"Just the videos you add below."})),
+      h("button",{type:"button","aria-pressed":String(S.mode==="block"),onclick:()=>{ S.mode="block"; save(); render(); }},
+        "Everything but blocked", h("small",{text:"Search is open. Your blocks apply."}))));
+  wrap.append(modeCard);
+
+  const ta = h("textarea",{id:"links",placeholder:"Paste YouTube links here, one per line"});
+  const status = h("div",{class:"status"});
+  const addBtn = h("button",{class:"btn",type:"button",text:"Add videos"});
+  addBtn.addEventListener("click", async () => {
+    const ids = [...new Set(ta.value.split(/\s+/).map(parseId).filter(Boolean))];
+    if(!ids.length){ status.textContent = "No YouTube links found. Paste a link like youtube.com/watch?v=..."; return; }
+    addBtn.disabled = true; status.textContent = "Checking " + ids.length + (ids.length===1?" video...":" videos...");
+    let added = 0, skipped = [];
+    for(const id of ids){
+      if(S.videos.some(v => v.id===id)) continue;
+      const m = await fetchMeta(id);
+      if(!m.ok){ skipped.push(id + " " + m.reason); continue; }
+      S.videos.push({id, title:m.title, channel:m.channel}); added++;
+    }
+    save(); ta.value = "";
+    const msg = "Added " + added + (added===1?" video.":" videos.") + (skipped.length ? " Skipped: " + skipped.join("; ") + "." : "");
+    toast(added ? "Videos added" : "Nothing added");
+    render();
+    const s2 = $(".status"); if(s2) s2.textContent = msg;
+  });
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Add approved videos"}),
+    h("p",{text:"In YouTube, tap Share on a video, copy the link, and paste it here."}), ta,
+    h("div",{class:"row",style:"margin-top:10px"}, addBtn), status));
+
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Approved videos (" + S.videos.length + ")"}),
+    S.videos.length
+      ? h("ul",{class:"list"}, S.videos.map(v => videoRow(v,"Remove",()=>{ S.videos = S.videos.filter(x=>x.id!==v.id); save(); render(); })))
+      : h("p",{text:"Nothing yet. Add a few above."})));
+  return wrap;
+}
+function TabBlocked(){
+  const wrap = h("div");
+  wrap.append(h("div",{class:"note",text: S.mode==="allow"
+    ? "Blocks matter in the 'Everything but blocked' mode. In 'Only approved' mode, nothing outside your list can play anyway."
+    : "These rules hide videos from search and from the shelf."}));
+
+  const vin = h("input",{class:"field",id:"bvid",placeholder:"Paste a link to a video to block",autocomplete:"off"});
+  const vst = h("div",{class:"status"});
+  const vbtn = h("button",{class:"btn danger",type:"button",text:"Block video"});
+  vbtn.addEventListener("click", async () => {
+    const id = parseId(vin.value);
+    if(!id){ vst.textContent = "That does not look like a YouTube link."; return; }
+    if(!S.blockedVideos.some(b => b.id===id)){
+      const m = await fetchMeta(id);
+      S.blockedVideos.push({id, title: m.title || ("Video " + id)});
+      save();
+    }
+    render();
+  });
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Blocked videos (" + S.blockedVideos.length + ")"}), vin,
+    h("div",{class:"row",style:"margin-top:10px"}, vbtn), vst,
+    S.blockedVideos.length ? h("ul",{class:"list",style:"margin-top:14px"}, S.blockedVideos.map(v =>
+      videoRow(v,"Unblock",()=>{ S.blockedVideos = S.blockedVideos.filter(x=>x.id!==v.id); save(); render(); }))) : null));
+
+  const cin = h("input",{class:"field",id:"bchan",placeholder:"Channel name to block",autocomplete:"off"});
+  const cbtn = h("button",{class:"btn danger",type:"button",text:"Block channel",onclick:()=>{
+    const t = cin.value.trim(); if(!t) return;
+    if(!S.blockedChannels.some(c => c.title.toLowerCase()===t.toLowerCase())) S.blockedChannels.push({id:"",title:t});
+    save(); render();
+  }});
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Blocked channels (" + S.blockedChannels.length + ")"}),
+    h("p",{text:"You can also block a channel while a video is playing: tap Grown-ups, then Block channel."}), cin,
+    h("div",{class:"row",style:"margin-top:10px"}, cbtn),
+    S.blockedChannels.length ? h("div",{style:"margin-top:14px"}, S.blockedChannels.map((c,i) =>
+      h("span",{class:"chip"}, c.title, h("button",{type:"button","aria-label":"Unblock " + c.title,text:"×",
+        onclick:()=>{ S.blockedChannels.splice(i,1); save(); render(); }})))) : null));
+
+  const win = h("input",{class:"field",id:"bwords",placeholder:"scary, fight, prank",value:S.blockedWords.join(", "),autocomplete:"off"});
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Blocked words"}),
+    h("p",{text:"Any video with one of these words in its title or channel name is hidden. Separate words with commas."}), win,
+    h("div",{class:"row",style:"margin-top:10px"}, h("button",{class:"btn",type:"button",text:"Save words",onclick:()=>{
+      S.blockedWords = win.value.split(",").map(x=>x.trim()).filter(Boolean); save(); toast("Words saved"); render();
+    }}))));
+  return wrap;
+}
+function TabSettings(){
+  const wrap = h("div");
+
+  const auto = h("input",{id:"auto",type:"checkbox"}); auto.checked = S.autoNext;
+  auto.addEventListener("change", () => { S.autoNext = auto.checked; save(); });
+  wrap.append(h("div",{class:"card"}, h("label",{class:"switch",for:"auto"},
+    h("span",{}, h("strong",{text:"Play the next approved video"}), h("br"),
+      h("span",{class:"c",style:"color:var(--muted);font-size:.9rem",text:"When one ends, the next one in the list starts. Turn off to stop after each video."})),
+    auto)));
+
+  const key = h("input",{class:"field mono",id:"apikey",value:S.apiKey,placeholder:"Paste a YouTube Data API key",autocomplete:"off",autocapitalize:"off",spellcheck:"false"});
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Search key (optional)"}),
+    h("p",{text:"Only needed for 'Everything but blocked' mode. It turns on a search box with strict safe search. Get a free key from Google Cloud: create a project, turn on 'YouTube Data API v3', then create an API key. Limit the key to this site's address."}),
+    key, h("div",{class:"row",style:"margin-top:10px"}, h("button",{class:"btn",type:"button",text:"Save key",onclick:()=>{
+      S.apiKey = key.value.trim(); save(); results = null; toast(S.apiKey ? "Key saved" : "Key removed");
+    }}))));
+
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"PIN"}),
+    h("p",{text:"Change the 4-digit PIN that opens this panel."}),
+    h("button",{class:"btn alt",type:"button",text:"Change PIN",onclick:async()=>{
+      const a = await askPin("New 4-digit PIN"); if(!a) return;
+      const b = await askPin("Enter it again"); if(!b) return;
+      if(a!==b){ toast("The PINs did not match."); return; }
+      S.pin = await hashPin(a); save(); toast("PIN changed");
+    }})));
+
+  const exp = h("textarea",{id:"exp",class:"mono",readonly:true});
+  const { pin, ...rest } = S; exp.value = JSON.stringify(rest);
+  const imp = h("textarea",{id:"imp",class:"mono",placeholder:"Paste a settings code here"});
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Move settings to another device"}),
+    h("p",{text:"Settings live on this device only. To use the same lists on another phone or iPad, copy this code and paste it there. The PIN is not included."}),
+    exp, h("div",{class:"row",style:"margin:10px 0 16px"}, h("button",{class:"btn alt",type:"button",text:"Copy code",onclick:async()=>{
+      try{ await navigator.clipboard.writeText(exp.value); toast("Copied"); }catch(e){ exp.select(); toast("Press and hold to copy"); }
+    }})),
+    imp, h("div",{class:"row",style:"margin-top:10px"}, h("button",{class:"btn",type:"button",text:"Load settings",onclick:()=>{
+      try{
+        const j = JSON.parse(imp.value);
+        if(!j || typeof j !== "object" || !Array.isArray(j.videos)) throw new Error("shape");
+        const keep = S.pin; Object.assign(S, JSON.parse(JSON.stringify(DEFAULTS)), j); S.pin = keep; save(); toast("Settings loaded"); render();
+      }catch(e){ toast("That code did not work."); }
+    }}))));
+
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Start over"}),
+    h("p",{text:"Clears every list, the search key and the PIN on this device."}),
+    h("button",{class:"btn danger",type:"button",text:"Erase everything",onclick:async()=>{
+      const ok = await sheet("Erase all settings?", [{label:"Yes, erase everything", value:"yes", kind:"danger"}]);
+      if(ok==="yes"){ S = JSON.parse(JSON.stringify(DEFAULTS)); save(); results = null; go("home"); toast("Erased"); }
+    }})));
+  return wrap;
+}
+
+render();
+</script>
+</body>
+</html>
