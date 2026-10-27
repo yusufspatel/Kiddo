@@ -36,7 +36,7 @@ button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 [hidden]{display:none!important}
-#app{max-width:980px;margin:0 auto;padding-block:18px 96px}
+#app{max-width:980px;margin:0 auto;padding-block:18px 130px}
 h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 
 /* ---------- kid home ---------- */
@@ -84,6 +84,31 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 }
 .lockbtn svg{width:18px;height:18px}
 
+/* bottom bar: Home, Channels, Settings */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;justify-content:center;gap:8px;
+  background:rgba(255,255,255,.97);border-top:2px solid var(--line);
+  padding:8px max(12px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));
+}
+.nav button{
+  flex:1;max-width:240px;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;
+  border-radius:16px;padding:8px 6px;font-family:var(--display);font-weight:600;font-size:1rem;color:var(--muted);
+}
+.nav button svg{width:28px;height:28px}
+.nav button[aria-current="page"]{background:#e6eeff;color:var(--blue)}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:18px}
+.chtile{
+  display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--card);border:0;border-radius:var(--radius);
+  padding:20px 12px 16px;box-shadow:0 6px 0 var(--accent,var(--sun));font-family:var(--display);font-weight:600;
+  font-size:1.15rem;line-height:1.2;text-align:center;overflow-wrap:anywhere;min-width:0;
+}
+.chtile:active{transform:translateY(4px);box-shadow:0 2px 0 var(--accent,var(--sun))}
+.avatar{
+  width:96px;height:96px;border-radius:50%;object-fit:cover;background:var(--accent,var(--sun));display:grid;place-items:center;
+  color:#fff;font-family:var(--display);font-size:2.4rem;font-weight:700;overflow:hidden;flex:none;
+}
+.item .avatar{width:52px;height:52px;font-size:1.3rem}
+
 /* ---------- player ---------- */
 .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .bigback{
@@ -120,6 +145,14 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 .errbox{position:absolute;inset:0;z-index:4;display:grid;place-content:center;text-align:center;gap:14px;padding:20px;background:#fff}
 .errbox p{margin:0;font-size:1.15rem}
 
+/* shorts: tall tiles and a tall player */
+.shelf.shorts{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
+.tile.short .thumb{aspect-ratio:9/16}
+.tile.short .cap{font-size:1rem;padding:10px 12px 14px}
+.tile.short .playmark{width:44px;height:44px;right:8px;bottom:8px}
+.tile.short .playmark svg{width:20px;height:20px}
+.stage.short{aspect-ratio:9/16;width:min(100%,calc((100vh - 220px)*9/16));margin-inline:auto}
+
 /* big-screen mode: the video fills the whole screen, buttons float on top */
 .playbig{position:fixed;inset:0;z-index:20;background:#0b1530;display:flex;align-items:center;justify-content:center}
 .playbig .stage{width:100%;height:100%;aspect-ratio:auto;border-radius:0;box-shadow:none;background:#0b1530}
@@ -129,6 +162,9 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 }
 .playbig .bar>*{pointer-events:auto}
 .playbig .smallbtn{background:rgba(255,255,255,.88)}
+.playbig .bar{transition:opacity .25s}
+.playbig .bar.hide{opacity:0}
+.playbig .bar.hide>*{pointer-events:none}
 .playbig .nowplaying{display:none}
 
 /* ---------- parent ---------- */
@@ -136,7 +172,7 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 .ptitle h1{font-size:1.7rem}
 .donebtn{border:0;background:var(--leaf);color:#fff;border-radius:999px;padding:10px 22px;font-weight:800}
 .tabs{display:flex;gap:6px;background:#d3e6f8;border-radius:999px;padding:5px;margin-bottom:18px}
-.tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:10px 8px;font-weight:800;color:var(--muted)}
+.tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:10px 4px;font-size:.9rem;font-weight:800;color:var(--muted)}
 .tabs button[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(20,33,61,.18)}
 .card{background:var(--card);border-radius:18px;padding:18px;margin-bottom:16px}
 .card h2{font-size:1.2rem;margin-bottom:6px}
@@ -201,7 +237,7 @@ textarea{min-height:92px}
 "use strict";
 /* ============ storage ============ */
 const KEY = "kiddo.v1";
-const DEFAULTS = {pin:null, mode:"allow", videos:[], blockedVideos:[], blockedChannels:[], blockedWords:[], apiKey:"", autoNext:true, bigScreen:true};
+const DEFAULTS = {pin:null, mode:"allow", videos:[], blockedVideos:[], blockedChannels:[], blockedWords:[], apiKey:"", autoNext:true, bigScreen:true, channels:[]};
 let S = load();
 function load(){
   const s = JSON.parse(JSON.stringify(DEFAULTS));
@@ -232,7 +268,11 @@ const ICONS = {
   lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
   play:'<svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>',
   pause:'<svg viewBox="0 0 24 24"><rect x="5.5" y="4" width="4.5" height="16" rx="1.2"/><rect x="14" y="4" width="4.5" height="16" rx="1.2"/></svg>',
-  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>',
+  channels:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M10 11v5l4-2.5z"/><path d="M8 3l4 4 4-4"/></svg>',
+  settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h8M18 7h2M4 17h2M12 17h8"/><circle cx="15" cy="7" r="2.6"/><circle cx="9" cy="17" r="2.6"/></svg>',
+  shorts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="3.2"/><path d="M10.5 9v6l4.5-3z"/></svg>'
 };
 function icon(name){ const s = document.createElement("span"); s.style.display="contents"; s.innerHTML = ICONS[name]; return s; }
 let toastTimer;
@@ -261,7 +301,12 @@ function isBlocked(v){
   return hasBlockedWord(v);
 }
 function isPlayable(v){
-  if(S.mode === "allow") return S.videos.some(x => x.id === v.id);
+  if(S.blockedVideos.some(b => b.id === v.id)) return false;
+  if(S.mode === "allow"){
+    if(S.videos.some(x => x.id === v.id)) return true;
+    const viaChannel = !!v.channelId && S.channels.some(c => c.id === v.channelId);
+    return viaChannel && !hasBlockedWord(v);
+  }
   return !isBlocked(v);
 }
 function picks(){ return S.videos.filter(isPlayable); }
@@ -339,6 +384,8 @@ function sheet(title, buttons){
 /* ============ state ============ */
 let view = "home", tab = "videos";
 let current = null, ytPlayer = null, ytState = -1, playError = "", ended = false;
+let origin = "home", queue = [], activeChannel = null, channelVideos = null, channelLoading = false, channelError = "";
+let shortsList = null, shortsLoading = false, shortsError = "";
 let query = "", results = null, searching = false, searchError = "";
 
 function go(v){ leavePlayer(); exitFullscreen(); view = v; render(); }
@@ -355,22 +402,27 @@ function exitFullscreen(){
 }
 function render(){
   const app = $("#app");
-  app.replaceChildren(view==="home" ? Home() : view==="play" ? Play() : Parent());
-  if(view==="home" || view==="play"){
-    // keep the grown-up button reachable on every kid screen except the player's own bar
-  }
-  if(view==="home") app.append(LockButton());
+  app.replaceChildren(view==="home" ? Home() : view==="channels" ? Channels() : view==="channel" ? ChannelPage()
+    : view==="shorts" ? Shorts() : view==="play" ? Play() : Parent());
+  if(view==="home" || view==="channels" || view==="channel" || view==="shorts") app.append(Nav());
   window.scrollTo(0,0);
   if(view==="play" && !ended && !playError) requestAnimationFrame(startPlayer);
 }
-function LockButton(){
-  return h("button",{class:"lockbtn",type:"button",onclick:async()=>{ if(await unlock()){ tab="videos"; go("parent"); } }},
-    icon("lock"), "Grown-ups");
+function Nav(){
+  const items = [["home","Home"],["channels","Channels"],["shorts","Shorts"],["settings","Settings"]];
+  const cur = view === "channel" ? "channels" : view;
+  return h("nav",{class:"nav","aria-label":"Main"}, items.map(([id, label]) =>
+    h("button",{type:"button","aria-current": cur===id ? "page" : null, onclick: async () => {
+      if(id === "settings"){ if(await unlock()) go("parent"); return; }
+      if(id === "channels"){ activeChannel = null; channelVideos = null; channelError = ""; }
+      if(id === "shorts"){ shortsList = null; shortsError = ""; }
+      go(id);
+    }}, icon(id), label)));
 }
 
 /* ============ kid: home ============ */
-function Tile(v, i){
-  const t = h("button",{class:"tile",type:"button",style:"--accent:" + ACCENTS[i % 4], onclick:()=>play(v)},
+function Tile(v, i, arr){
+  const t = h("button",{class:"tile" + (v.short ? " short" : ""),type:"button",style:"--accent:" + ACCENTS[i % 4], onclick:()=>play(v, arr)},
     h("div",{class:"thumb"},
       h("img",{src:thumb(v.id),alt:"",loading:"lazy"}),
       h("div",{class:"playmark"}, icon("play"))),
@@ -395,7 +447,7 @@ function Home(){
           : h("div",{class:"note",text:"No videos found. Try different words."}));
       }
     } else {
-      root.append(h("div",{class:"note",text:"A grown-up can turn on search in Grown-ups > Settings."}));
+      root.append(h("div",{class:"note",text:"A grown-up can turn on search in Settings."}));
     }
   }
 
@@ -406,7 +458,7 @@ function Home(){
   } else if(!(S.mode==="block" && S.apiKey)){
     root.append(h("div",{class:"empty"},
       h("h2",{text:"No videos yet"}),
-      h("p",{text:"A grown-up can add videos with the Grown-ups button."})));
+      h("p",{text: S.channels.length ? "Tap Channels below to watch approved channels." : "A grown-up can add videos in Settings."})));
   }
   return root;
 }
@@ -447,12 +499,15 @@ function loadYT(){
   });
   return ytReady;
 }
-function play(v){
+function play(v, list){
   if(!isPlayable(v)){ toast("That video is not available."); return; }
+  queue = (list && list.length) ? list : picks();
+  if(view === "home" || view === "channels" || view === "channel" || view === "shorts") origin = view;
   if(S.bigScreen) tryFullscreen();
   leavePlayer(); current = v; ended = false; playError = ""; ytState = -1; view = "play"; render();
 }
 function leavePlayer(){
+  clearTimeout(barTimer);
   if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer = null; }
 }
 async function startPlayer(){
@@ -465,24 +520,36 @@ async function startPlayer(){
   ytPlayer = new YT.Player(mount, {
     host:"https://www.youtube-nocookie.com", videoId: current.id, playerVars: vars,
     events:{
-      onReady:e => { try{ e.target.playVideo(); }catch(x){} },
+      onReady:e => { try{ e.target.playVideo(); }catch(x){} showBar(); },
       onStateChange:onState,
       onError:() => { leavePlayer(); playError = "This video can't be played here. Pick another one."; render(); }
     }
   });
 }
+/* big-screen mode: the Back and Grown-ups buttons fade out while a video plays and return on a tap */
+let barTimer;
+function showBar(ms){
+  const b = $(".playbig .bar"); if(!b) return;
+  b.classList.remove("hide"); clearTimeout(barTimer);
+  barTimer = setTimeout(() => { const x = $(".playbig .bar"); if(x && ytState === 1) x.classList.add("hide"); }, ms || 3000);
+}
 function onState(e){
   ytState = e.data;
   const st = $(".stage"); if(st) st.classList.toggle("paused", ytState === 2);
+  if(ytState === 1) showBar();
+  else if(ytState === 2){ clearTimeout(barTimer); const b = $(".playbig .bar"); if(b) b.classList.remove("hide"); }
   if(ytState === 0) finishVideo();
 }
 function finishVideo(){
-  const list = picks(); const i = list.findIndex(x => x.id === current.id);
+  const list = queue.filter(isPlayable); const i = list.findIndex(x => x.id === current.id);
   leavePlayer();
   if(S.autoNext && i >= 0 && i < list.length - 1){ current = list[i+1]; ended = false; ytState = -1; render(); return; }
   ended = true; render();
 }
 function toggleShield(){
+  const bar = $(".playbig .bar");
+  if(bar && bar.classList.contains("hide")){ showBar(); return; }  // first tap only brings the buttons back
+  if(bar) showBar();
   if(!ytPlayer) return;
   try{ ytState === 1 ? ytPlayer.pauseVideo() : ytPlayer.playVideo(); }catch(e){}
 }
@@ -490,8 +557,14 @@ async function grownUpOnPlayer(){
   try{ ytPlayer && ytPlayer.pauseVideo(); }catch(e){}
   if(!await unlock()) return;
   const opts = [];
-  if(S.mode === "allow") opts.push({label:"Remove from approved videos", value:"remove", kind:"danger"});
-  else {
+  const picked = S.videos.some(x => x.id === current.id);
+  const chApproved = !!current.channelId && S.channels.some(c => c.id === current.channelId);
+  if(S.mode === "allow"){
+    if(picked) opts.push({label:"Remove from approved videos", value:"remove", kind:"danger"});
+    opts.push({label:"Block this video", value:"video", kind:"danger"});
+    if(chApproved) opts.push({label:"Remove channel: " + (current.channel || "this channel"), value:"unchannel", kind:"danger"});
+    else if(current.channelId) opts.push({label:"Approve channel: " + (current.channel || "this channel"), value:"approvechannel"});
+  } else {
     opts.push({label:"Block this video", value:"video", kind:"danger"});
     if(current.channel) opts.push({label:"Block channel: " + current.channel, value:"channel", kind:"danger"});
   }
@@ -499,28 +572,134 @@ async function grownUpOnPlayer(){
   if(pick === "remove") S.videos = S.videos.filter(x => x.id !== current.id);
   else if(pick === "video") S.blockedVideos.push({id:current.id, title:current.title});
   else if(pick === "channel") S.blockedChannels.push({id:current.channelId||"", title:current.channel});
+  else if(pick === "unchannel") S.channels = S.channels.filter(c => c.id !== current.channelId);
+  else if(pick === "approvechannel") S.channels.push({id:current.channelId, title:current.channel || "Channel", thumb:"", uploads:uploadsOf(current.channelId)});
   if(pick){
-    save(); toast("Done"); results = null; go("home");
+    save(); toast("Done"); results = null; channelVideos = null; activeChannel = null; shortsList = null; origin = "home"; go("home");
   } else { try{ ytPlayer && ytPlayer.playVideo(); }catch(e){} }
 }
 function Play(){
-  const stage = h("div",{class:"stage" + (ytState===2 ? " paused":"")});
+  const stage = h("div",{class:"stage" + (ytState===2 ? " paused":"") + (current && current.short ? " short" : "")});
   if(playError){
     stage.append(h("div",{class:"errbox"}, h("p",{text:playError}),
-      h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "Videos")));
+      h("button",{class:"bigback",type:"button",onclick:()=>go(origin)}, icon("back"), "Videos")));
   } else if(ended){
     stage.append(h("div",{class:"done"}, h("h2",{text:"All done!"}), h("p",{text:"That was the last video."}),
-      h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "More videos")));
+      h("button",{class:"bigback",type:"button",onclick:()=>go(origin)}, icon("back"), "More videos")));
   } else {
     stage.append(h("div",{id:"yt"}));
     const mark = h("div",{class:"mark"}, icon("play"));
     stage.append(h("button",{class:"shield",type:"button","aria-label":"Pause or play",onclick:toggleShield}, mark));
   }
   const bar = h("div",{class:"bar"},
-    h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "Back"),
+    h("button",{class:"bigback",type:"button",onclick:()=>go(origin)}, icon("back"), "Back"),
     h("button",{class:"smallbtn",type:"button",onclick:grownUpOnPlayer}, icon("lock"), "Grown-ups"));
   if(S.bigScreen) return h("div",{class:"playbig"}, stage, bar);
   return h("div",{}, bar, stage, h("div",{class:"nowplaying",text:current ? current.title : ""}));
+}
+
+/* ============ kid: channels ============ */
+function uploadsOf(id){ return id && id.startsWith("UC") ? "UU" + id.slice(2) : ""; }
+function Avatar(c, i){
+  return c.thumb ? h("img",{class:"avatar",src:c.thumb,alt:"",referrerpolicy:"no-referrer"})
+    : h("div",{class:"avatar",style:"--accent:" + ACCENTS[(i||0) % 4]}, (c.title||"?").trim().charAt(0).toUpperCase());
+}
+function Channels(){
+  const root = h("div");
+  root.append(h("div",{class:"brand"}, h("div",{class:"dots"}, h("i"),h("i"),h("i"),h("i")), h("h1",{text:"Channels"})));
+  if(!S.channels.length){
+    root.append(h("div",{class:"empty"}, h("h2",{text:"No channels yet"}),
+      h("p",{text:"A grown-up can add channels in Settings."})));
+    return root;
+  }
+  if(!S.apiKey) root.append(h("div",{class:"note",text:"Channels need a YouTube key. A grown-up can add one in Settings."}));
+  root.append(h("div",{class:"chgrid"}, S.channels.map((c, i) =>
+    h("button",{class:"chtile",type:"button",style:"--accent:" + ACCENTS[i % 4],onclick:()=>openChannel(c)}, Avatar(c, i), c.title))));
+  return root;
+}
+function openChannel(c){
+  activeChannel = c; channelVideos = null; channelError = ""; view = "channel"; render(); loadChannel(c);
+}
+async function loadChannel(c){
+  if(!S.apiKey){ channelError = "A grown-up needs to add a YouTube key in Settings to show this channel."; render(); return; }
+  channelLoading = true; render();
+  try{
+    const u = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
+    u.search = new URLSearchParams({part:"snippet",playlistId:c.uploads || uploadsOf(c.id),maxResults:"30",key:S.apiKey}).toString();
+    const r = await fetch(u); const j = await r.json();
+    if(!r.ok) throw new Error("api");
+    channelVideos = (j.items||[]).map(it => ({
+      id: it.snippet.resourceId && it.snippet.resourceId.videoId, title: decodeEntities(it.snippet.title),
+      channel: c.title, channelId: c.id
+    })).filter(v => v.id && v.title !== "Private video" && v.title !== "Deleted video" && isPlayable(v));
+  }catch(e){
+    channelError = "Could not load videos. Ask a grown-up to check the YouTube key.";
+  }
+  channelLoading = false;
+  if(activeChannel === c && view === "channel") render();
+}
+function ChannelPage(){
+  const root = h("div");
+  root.append(h("div",{class:"bar"}, h("button",{class:"bigback",type:"button",onclick:()=>{
+    activeChannel = null; channelVideos = null; channelError = ""; go("channels");
+  }}, icon("back"), "Channels")));
+  root.append(h("h1",{style:"font-size:1.8rem;margin:4px 4px 16px;overflow-wrap:anywhere",text:activeChannel ? activeChannel.title : ""}));
+  if(channelLoading) root.append(h("div",{class:"note",text:"Loading videos..."}));
+  if(channelError) root.append(h("div",{class:"note",text:channelError}));
+  if(channelVideos) root.append(channelVideos.length
+    ? h("div",{class:"shelf"}, channelVideos.map(Tile))
+    : h("div",{class:"note",text:"No videos to show right now."}));
+  return root;
+}
+
+/* ============ kid: shorts ============ */
+/* Each channel keeps its Shorts in a hidden playlist whose id is the channel id with "UC" swapped for "UUSH". */
+function Shorts(){
+  const root = h("div");
+  root.append(h("div",{class:"brand"}, h("div",{class:"dots"}, h("i"),h("i"),h("i"),h("i")), h("h1",{text:"Shorts"})));
+  if(!S.channels.length){
+    root.append(h("div",{class:"empty"}, h("h2",{text:"No Shorts yet"}),
+      h("p",{text:"Shorts come from approved channels. A grown-up can add channels in Settings."})));
+    return root;
+  }
+  if(!S.apiKey){
+    root.append(h("div",{class:"note",text:"Shorts need a YouTube key. A grown-up can add one in Settings."}));
+    return root;
+  }
+  if(shortsLoading) root.append(h("div",{class:"note",text:"Loading Shorts..."}));
+  if(shortsError) root.append(h("div",{class:"note",text:shortsError}));
+  if(shortsList) root.append(shortsList.length
+    ? h("div",{class:"shelf shorts"}, shortsList.map(Tile))
+    : h("div",{class:"note",text:"No Shorts to show from these channels right now."}));
+  if(!shortsList && !shortsLoading && !shortsError) setTimeout(loadShorts, 0);
+  return root;
+}
+async function loadShorts(){
+  if(shortsLoading || shortsList || !S.apiKey || !S.channels.length) return;
+  shortsLoading = true; shortsError = ""; if(view === "shorts") render();
+  const lists = await Promise.all(S.channels.map(async c => {
+    try{
+      const u = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
+      u.search = new URLSearchParams({part:"snippet",playlistId:"UUSH" + c.id.slice(2),maxResults:"12",key:S.apiKey}).toString();
+      const r = await fetch(u); if(!r.ok) return {ok:false, items:[]};
+      const j = await r.json();
+      return {ok:true, items:(j.items||[]).map(it => ({
+        id: it.snippet.resourceId && it.snippet.resourceId.videoId, title: decodeEntities(it.snippet.title),
+        channel: c.title, channelId: c.id, short: true
+      }))};
+    }catch(e){ return {ok:false, items:[]}; }
+  }));
+  const merged = [], max = Math.max(0, ...lists.map(l => l.items.length));
+  for(let i = 0; i < max; i++) for(const l of lists) if(l.items[i]) merged.push(l.items[i]);
+  const seen = new Set();
+  const good = merged.filter(v => {
+    if(!v.id || seen.has(v.id) || v.title === "Private video" || v.title === "Deleted video") return false;
+    seen.add(v.id); return isPlayable(v);
+  });
+  if(lists.some(l => l.ok)) shortsList = good;
+  else shortsError = "Could not load Shorts. Ask a grown-up to check the YouTube key.";
+  shortsLoading = false;
+  if(view === "shorts") render();
 }
 
 /* ============ grown-up panel ============ */
@@ -528,10 +707,10 @@ function Parent(){
   const root = h("div");
   root.append(h("div",{class:"ptitle"}, h("h1",{text:"Grown-ups"}),
     h("button",{class:"donebtn",type:"button",onclick:()=>{ results = null; go("home"); }, text:"Done"})));
-  const names = {videos:"Videos", blocked:"Blocked", settings:"Settings"};
+  const names = {videos:"Videos", channels:"Channels", blocked:"Blocked", settings:"Settings"};
   root.append(h("div",{class:"tabs",role:"tablist"}, Object.keys(names).map(k =>
     h("button",{type:"button",role:"tab","aria-selected":String(tab===k),onclick:()=>{ tab=k; render(); },text:names[k]}))));
-  root.append(tab==="videos" ? TabVideos() : tab==="blocked" ? TabBlocked() : TabSettings());
+  root.append(tab==="videos" ? TabVideos() : tab==="channels" ? TabChannels() : tab==="blocked" ? TabBlocked() : TabSettings());
   return root;
 }
 function videoRow(v, label, onClick){
@@ -546,7 +725,7 @@ function TabVideos(){
     h("p",{text:"Pick one. For ages 2 to 5, the first choice is the safest."}),
     h("div",{class:"seg"},
       h("button",{type:"button","aria-pressed":String(S.mode==="allow"),onclick:()=>{ S.mode="allow"; save(); render(); }},
-        "Only approved", h("small",{text:"Just the videos you add below."})),
+        "Only approved", h("small",{text:"Just the videos and channels you approve."})),
       h("button",{type:"button","aria-pressed":String(S.mode==="block"),onclick:()=>{ S.mode="block"; save(); render(); }},
         "Everything but blocked", h("small",{text:"Search is open. Your blocks apply."}))));
   wrap.append(modeCard);
@@ -579,6 +758,60 @@ function TabVideos(){
     S.videos.length
       ? h("ul",{class:"list"}, S.videos.map(v => videoRow(v,"Remove",()=>{ S.videos = S.videos.filter(x=>x.id!==v.id); save(); render(); })))
       : h("p",{text:"Nothing yet. Add a few above."})));
+  return wrap;
+}
+function parseChannel(s){
+  s = (s||"").trim(); if(!s) return null;
+  let m = s.match(/(UC[A-Za-z0-9_-]{22})/); if(m) return {id:m[1]};
+  m = s.match(/@([A-Za-z0-9._-]+)/); if(m) return {handle:"@" + m[1]};
+  m = s.match(/youtube\.com\/user\/([A-Za-z0-9._-]+)/i); if(m) return {username:m[1]};
+  m = s.match(/youtube\.com\/c\/([A-Za-z0-9._-]+)/i); if(m) return {handle:"@" + m[1]};
+  if(/^[A-Za-z0-9._-]{3,}$/.test(s)) return {handle:"@" + s};
+  return null;
+}
+async function fetchChannel(q){
+  const p = {part:"snippet,contentDetails", key:S.apiKey};
+  if(q.id) p.id = q.id; else if(q.handle) p.forHandle = q.handle; else p.forUsername = q.username;
+  const u = new URL("https://www.googleapis.com/youtube/v3/channels"); u.search = new URLSearchParams(p).toString();
+  const r = await fetch(u); const j = await r.json();
+  if(!r.ok) throw new Error("api");
+  const it = j.items && j.items[0]; if(!it) return null;
+  const th = it.snippet.thumbnails || {};
+  return {
+    id: it.id, title: decodeEntities(it.snippet.title), thumb: (th.medium || th.default || {}).url || "",
+    uploads: (it.contentDetails && it.contentDetails.relatedPlaylists && it.contentDetails.relatedPlaylists.uploads) || uploadsOf(it.id)
+  };
+}
+function TabChannels(){
+  const wrap = h("div");
+  if(!S.apiKey) wrap.append(h("div",{class:"note"},
+    "Channels need a free YouTube key to look up names and videos. ",
+    h("div",{style:"margin-top:10px"}, h("button",{class:"btn alt",type:"button",text:"Add a key in Settings",onclick:()=>{ tab = "settings"; render(); }}))));
+  const inp = h("input",{class:"field",id:"chan",placeholder:"Channel link or @name",autocomplete:"off",autocapitalize:"off",spellcheck:"false"});
+  const st = h("div",{class:"status"});
+  const btn = h("button",{class:"btn",type:"button",text:"Add channel"});
+  btn.addEventListener("click", async () => {
+    const q = parseChannel(inp.value);
+    if(!q){ st.textContent = "That does not look like a channel link or @name."; return; }
+    if(!S.apiKey){ st.textContent = "Add a YouTube key in Settings first."; return; }
+    btn.disabled = true; st.textContent = "Looking up the channel...";
+    try{
+      const c = await fetchChannel(q);
+      if(!c) st.textContent = "No channel found. Use the link from the channel page's Share button.";
+      else if(S.channels.some(x => x.id === c.id)) st.textContent = "That channel is already approved.";
+      else { S.channels.push(c); shortsList = null; save(); toast("Channel added: " + c.title); render(); return; }
+    }catch(e){ st.textContent = "Lookup failed. Check the YouTube key in Settings."; }
+    btn.disabled = false;
+  });
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Approve a channel"}),
+    h("p",{text:"Your kids can watch the newest videos and Shorts from approved channels. Blocked videos and blocked words still hide individual videos. Paste a channel link or type the @name."}),
+    inp, h("div",{class:"row",style:"margin-top:10px"}, btn), st));
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"Approved channels (" + S.channels.length + ")"}),
+    S.channels.length
+      ? h("ul",{class:"list"}, S.channels.map((c, i) => h("li",{class:"item"}, Avatar(c, i),
+          h("div",{class:"meta"}, h("div",{class:"t",text:c.title})),
+          h("button",{class:"btn alt",type:"button",text:"Remove",onclick:()=>{ S.channels = S.channels.filter(x => x.id !== c.id); shortsList = null; save(); render(); }}))))
+      : h("p",{text:"No channels yet. Add one above."})));
   return wrap;
 }
 function TabBlocked(){
@@ -640,12 +873,12 @@ function TabSettings(){
   big.addEventListener("change", () => { S.bigScreen = big.checked; save(); });
   wrap.append(h("div",{class:"card"}, h("label",{class:"switch",for:"big"},
     h("span",{}, h("strong",{text:"Big screen when playing"}), h("br"),
-      h("span",{style:"color:var(--muted);font-size:.9rem",text:"The video fills the whole screen. On iPad it also tries full screen. Turn the device sideways for the biggest picture."})),
+      h("span",{style:"color:var(--muted);font-size:.9rem",text:"The video fills the whole screen and the Back and Grown-ups buttons fade away while it plays. Tap the picture to bring them back. On iPad it also tries full screen. Turn the device sideways for the biggest picture."})),
     big)));
 
   const key = h("input",{class:"field mono",id:"apikey",value:S.apiKey,placeholder:"Paste a YouTube Data API key",autocomplete:"off",autocapitalize:"off",spellcheck:"false"});
-  wrap.append(h("div",{class:"card"}, h("h2",{text:"Search key (optional)"}),
-    h("p",{text:"Only needed for 'Everything but blocked' mode. It turns on a search box with strict safe search. Get a free key from Google Cloud: create a project, turn on 'YouTube Data API v3', then create an API key. Limit the key to this site's address."}),
+  wrap.append(h("div",{class:"card"}, h("h2",{text:"YouTube key"}),
+    h("p",{text:"Needed for Channels, and for the search box in 'Everything but blocked' mode (strict safe search). Not needed for approved videos. Get a free key from Google Cloud: create a project, turn on 'YouTube Data API v3', then create an API key. Limit the key to this site's address."}),
     key, h("div",{class:"row",style:"margin-top:10px"}, h("button",{class:"btn",type:"button",text:"Save key",onclick:()=>{
       S.apiKey = key.value.trim(); save(); results = null; toast(S.apiKey ? "Key saved" : "Key removed");
     }}))));
