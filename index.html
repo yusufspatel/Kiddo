@@ -120,6 +120,17 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
 .errbox{position:absolute;inset:0;z-index:4;display:grid;place-content:center;text-align:center;gap:14px;padding:20px;background:#fff}
 .errbox p{margin:0;font-size:1.15rem}
 
+/* big-screen mode: the video fills the whole screen, buttons float on top */
+.playbig{position:fixed;inset:0;z-index:20;background:#0b1530;display:flex;align-items:center;justify-content:center}
+.playbig .stage{width:100%;height:100%;aspect-ratio:auto;border-radius:0;box-shadow:none;background:#0b1530}
+.playbig .bar{
+  position:absolute;z-index:8;left:0;right:0;top:0;margin:0;pointer-events:none;
+  padding:calc(12px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px));
+}
+.playbig .bar>*{pointer-events:auto}
+.playbig .smallbtn{background:rgba(255,255,255,.88)}
+.playbig .nowplaying{display:none}
+
 /* ---------- parent ---------- */
 .ptitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .ptitle h1{font-size:1.7rem}
@@ -190,7 +201,7 @@ textarea{min-height:92px}
 "use strict";
 /* ============ storage ============ */
 const KEY = "kiddo.v1";
-const DEFAULTS = {pin:null, mode:"allow", videos:[], blockedVideos:[], blockedChannels:[], blockedWords:[], apiKey:"", autoNext:true};
+const DEFAULTS = {pin:null, mode:"allow", videos:[], blockedVideos:[], blockedChannels:[], blockedWords:[], apiKey:"", autoNext:true, bigScreen:true};
 let S = load();
 function load(){
   const s = JSON.parse(JSON.stringify(DEFAULTS));
@@ -330,7 +341,18 @@ let view = "home", tab = "videos";
 let current = null, ytPlayer = null, ytState = -1, playError = "", ended = false;
 let query = "", results = null, searching = false, searchError = "";
 
-function go(v){ leavePlayer(); view = v; render(); }
+function go(v){ leavePlayer(); exitFullscreen(); view = v; render(); }
+/* best effort: iPad Safari allows this, iPhone and some browsers ignore it */
+function tryFullscreen(){
+  const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen;
+  if(!f || document.fullscreenElement || document.webkitFullscreenElement) return;
+  try{ const p = f.call(d); if(p && p.catch) p.catch(()=>{}); }catch(e){}
+}
+function exitFullscreen(){
+  const x = document.exitFullscreen || document.webkitExitFullscreen;
+  if(!x || !(document.fullscreenElement || document.webkitFullscreenElement)) return;
+  try{ const p = x.call(document); if(p && p.catch) p.catch(()=>{}); }catch(e){}
+}
 function render(){
   const app = $("#app");
   app.replaceChildren(view==="home" ? Home() : view==="play" ? Play() : Parent());
@@ -427,6 +449,7 @@ function loadYT(){
 }
 function play(v){
   if(!isPlayable(v)){ toast("That video is not available."); return; }
+  if(S.bigScreen) tryFullscreen();
   leavePlayer(); current = v; ended = false; playError = ""; ytState = -1; view = "play"; render();
 }
 function leavePlayer(){
@@ -493,12 +516,11 @@ function Play(){
     const mark = h("div",{class:"mark"}, icon("play"));
     stage.append(h("button",{class:"shield",type:"button","aria-label":"Pause or play",onclick:toggleShield}, mark));
   }
-  return h("div",{},
-    h("div",{class:"bar"},
-      h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "Back"),
-      h("button",{class:"smallbtn",type:"button",onclick:grownUpOnPlayer}, icon("lock"), "Grown-ups")),
-    stage,
-    h("div",{class:"nowplaying",text:current ? current.title : ""}));
+  const bar = h("div",{class:"bar"},
+    h("button",{class:"bigback",type:"button",onclick:()=>go("home")}, icon("back"), "Back"),
+    h("button",{class:"smallbtn",type:"button",onclick:grownUpOnPlayer}, icon("lock"), "Grown-ups"));
+  if(S.bigScreen) return h("div",{class:"playbig"}, stage, bar);
+  return h("div",{}, bar, stage, h("div",{class:"nowplaying",text:current ? current.title : ""}));
 }
 
 /* ============ grown-up panel ============ */
@@ -613,6 +635,13 @@ function TabSettings(){
     h("span",{}, h("strong",{text:"Play the next approved video"}), h("br"),
       h("span",{class:"c",style:"color:var(--muted);font-size:.9rem",text:"When one ends, the next one in the list starts. Turn off to stop after each video."})),
     auto)));
+
+  const big = h("input",{id:"big",type:"checkbox"}); big.checked = S.bigScreen;
+  big.addEventListener("change", () => { S.bigScreen = big.checked; save(); });
+  wrap.append(h("div",{class:"card"}, h("label",{class:"switch",for:"big"},
+    h("span",{}, h("strong",{text:"Big screen when playing"}), h("br"),
+      h("span",{style:"color:var(--muted);font-size:.9rem",text:"The video fills the whole screen. On iPad it also tries full screen. Turn the device sideways for the biggest picture."})),
+    big)));
 
   const key = h("input",{class:"field mono",id:"apikey",value:S.apiKey,placeholder:"Paste a YouTube Data API key",autocomplete:"off",autocapitalize:"off",spellcheck:"false"});
   wrap.append(h("div",{class:"card"}, h("h2",{text:"Search key (optional)"}),
